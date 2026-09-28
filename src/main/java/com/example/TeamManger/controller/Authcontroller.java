@@ -5,56 +5,96 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.example.TeamManger.dto.AuthRequest;
 import com.example.TeamManger.dto.AuthResponse;
+import com.example.TeamManger.dto.RegisterRequestDto;
 import com.example.TeamManger.entity.Users;
 import com.example.TeamManger.security.Jwtutil;
 import com.example.TeamManger.service.UserService;
+import com.example.TeamManger.util.HashUtil;
 
 
 @RequestMapping("/auth")
 @RestController
+@CrossOrigin(origins = "*")
 public class Authcontroller {
+    @Autowired
+    org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+
     @Autowired
     UserService obj;
     @Autowired
     Jwtutil obj2;
-    @PostMapping("/register")
-    ResponseEntity<?> SaveUser(@RequestBody Users data){
-        try{
-            if(obj.checkpassword(data)){
-                return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Please enter your Password credentials correctly");
-            }            
-            if(!obj.getByEmail(data.getEmail())){
-                return new ResponseEntity<>(obj.Register(data),HttpStatus.OK);
+    // @PostMapping("/register")
+    // ResponseEntity<?> SaveUser(@RequestBody Users data){
+    //     try{
+    //         if(obj.checkpassword(data)){
+    //             return ResponseEntity
+    //             .status(HttpStatus.BAD_REQUEST)
+    //             .body("Please enter your Password credentials correctly");
+    //         }            
+    //         if(!obj.getByEmail(data.getEmail())){
+    //             return new ResponseEntity<>(obj.Register(data),HttpStatus.OK);
+    //     }
+    //         else{
+    //             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    //             .body("The Email already exist");
+    //         }
+    //     }
+    //     catch(RuntimeException e){
+    //         return new  ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
+    //     }
+    // }
+
+    @GetMapping("/drop-constraint")
+    public String dropConstraint() {
+        try {
+            jdbcTemplate.execute("ALTER TABLE users DROP CHECK users_chk_1");
+            return "Dropped constraint users_chk_1";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
         }
-            else{
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("The Email already exist");
+    }
+
+    @PostMapping ("/register")
+    public ResponseEntity<?> userRegister(@RequestBody RegisterRequestDto data){
+        try{
+            if(!data.getFirstPassword().equals(data.getConfirmPassword())){
+                return new ResponseEntity<>("Please make sure that the password in the FirstPassword and ConfirmPassword is same",HttpStatus.CONFLICT);
             }
+            if(obj.getByEmail(data.getEmail())){
+                return new ResponseEntity<>("This Email already exist please try to login or Register with unregistered email",HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(obj.Register(data),HttpStatus.CREATED);
         }
         catch(RuntimeException e){
-            return new  ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
         }
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest data){
         //validation
         try{
-        Users user=obj.getinfoByEmail(data.getEmail());
-        AuthResponse userdata=new AuthResponse();
-        userdata.setName(user.getUserName());
-        userdata.setRole(user.getRole());
-        userdata.setId(user.getId());
-        userdata.setToken(obj2.gen_token(user.getEmail(),user.getRole()));
-        return new ResponseEntity<>(userdata,HttpStatus.OK);
-    }
+            Users user=obj.getinfoByEmail(data.getEmail());
+            if (user == null) {
+                return new ResponseEntity<>("User not found",HttpStatus.BAD_REQUEST);
+            }
+            if (!user.getFpassword().equals(HashUtil.hashSHA256(data.getPassword()))) {
+                return new ResponseEntity<>("Invalid password",HttpStatus.UNAUTHORIZED);
+            }
+            AuthResponse userdata=new AuthResponse();
+            userdata.setName(user.getUserName());
+            userdata.setRole(user.getRole());
+            userdata.setId(user.getId());
+            userdata.setToken(obj2.gen_token(user.getEmail(),user.getRole()));
+            return new ResponseEntity<>(userdata,HttpStatus.OK);
+        }
         catch(Exception e){
             System.out.println(e.getMessage());
             return new ResponseEntity<>("Enter a Valid Credential",HttpStatus.BAD_REQUEST);

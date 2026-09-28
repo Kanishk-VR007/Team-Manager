@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.TeamManger.dto.RegisterRequestDto;
 import com.example.TeamManger.entity.Users;
 import com.example.TeamManger.repository.Userrepository;
 import com.example.TeamManger.service.UserService;
+import com.example.TeamManger.util.HashUtil;
 @Service
 public class Userserviceimpl implements UserService{
     @Autowired
@@ -21,8 +23,14 @@ public Boolean checkpassword(Users data){
         return true;
     }
 }
- public String Register(Users data){
-         obj.save(data);
+ public String Register(RegisterRequestDto data){
+        Users user=new Users();
+        user.setEmail(data.getEmail());
+        user.setFpassword(HashUtil.hashSHA256(data.getFirstPassword()));
+        user.setCpassword(HashUtil.hashSHA256(data.getConfirmPassword()));
+        user.setRole(data.getRole());
+        user.setUserName(data.getName());
+        obj.save(user);
          return "Sucessfully Registered";
  }
  public Users getUser(Long id){
@@ -48,10 +56,10 @@ if(data.getFpassword().equals(data.getCpassword())){
         user.setRole(data.getRole());
     }
     if(data.getFpassword()!=null){
-        user.setFpassword(data.getFpassword());
+        user.setFpassword(HashUtil.hashSHA256(data.getFpassword()));
     }
     if(data.getCpassword()!=null){
-        user.setCpassword(data.getCpassword());
+        user.setCpassword(HashUtil.hashSHA256(data.getCpassword()));
     }
     obj.save(user);
     return "Updated Sucessfully";}

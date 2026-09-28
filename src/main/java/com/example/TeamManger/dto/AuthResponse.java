@@ -2,11 +2,13 @@ package com.example.TeamManger.dto;
 
 import org.springframework.stereotype.Component;
 
+import com.example.TeamManger.entity.Role;
+
 @Component
 public class AuthResponse {
     private Long id;
     private String name;
-    private String role;
+    private Role role;
     private String token;
     public Long getId() {
         return id;
@@ -20,10 +22,10 @@ public class AuthResponse {
     public void setName(String name) {
         this.name = name;
     }
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
     public String getToken() {
@@ -32,7 +34,7 @@ public class AuthResponse {
     public void setToken(String token) {
         this.token = token;
     }
-    public AuthResponse(Long id, String name, String role, String token) {
+    public AuthResponse(Long id, String name, Role role, String token) {
         this.id = id;
         this.name = name;
         this.role = role;

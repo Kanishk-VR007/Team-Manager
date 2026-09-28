@@ -24,8 +24,11 @@ public class Securityconfig {
         .authorizeHttpRequests(auth->
         auth
         .requestMatchers(
+            "/auth/login",
             "/auth/login/**",
+            "/auth/register",
             "/auth/register/**",
+            "/auth/drop-constraint",
             "/swagger-ui/**",
             "/v3/api-docs/**"
         ).permitAll()

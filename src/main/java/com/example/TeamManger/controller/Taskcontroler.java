@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import jakarta.validation.Valid;
 
 import com.example.TeamManger.entity.Task;
 import com.example.TeamManger.service.TaskService;
@@ -19,12 +21,19 @@ import com.example.TeamManger.service.TaskService;
 @RestController
  @RequestMapping("/tasks")
 public class Taskcontroler {
+    @org.springframework.web.bind.annotation.ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationExceptions(org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        return new ResponseEntity<>("Validation failed", HttpStatus.BAD_REQUEST);
+    }
+
     @Autowired
     TaskService obj;
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROJECT_MANAGER', 'TEAM_LEAD')")
     @PostMapping("/save")
-    ResponseEntity<?> SaveTask(@RequestBody Task data){
+    ResponseEntity<?> SaveTask(@Valid @RequestBody Task data){
         try{
-            return new ResponseEntity<>(obj.SaveTask(data),HttpStatus.OK);
+            String email=SecurityContextHolder.getContext().getAuthentication().getName();
+            return new ResponseEntity<>(obj.SaveTask(data, email),HttpStatus.OK);
         }
         catch(Exception e){
             return new ResponseEntity<>("Some Conflicted",HttpStatus.BAD_REQUEST);
@@ -33,12 +42,14 @@ public class Taskcontroler {
     @GetMapping("/getById/{id}")
     ResponseEntity<?> GetDataById(@PathVariable Long id){
         try{
-            return new ResponseEntity<>(obj.getTaskById(id),HttpStatus.OK);
+            String email=SecurityContextHolder.getContext().getAuthentication().getName();
+            return new ResponseEntity<>(obj.getTaskById(id, email),HttpStatus.OK);
         }
         catch(Exception e){
             return new ResponseEntity<>("No data found for the id",HttpStatus.NOT_FOUND);
         }
     }
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROJECT_MANAGER', 'TEAM_LEAD')")
     @GetMapping("/GetallData")
     ResponseEntity<?> GetAllData(){
         try{
@@ -49,21 +60,25 @@ public class Taskcontroler {
             return new ResponseEntity<>("No data is found",HttpStatus.NOT_FOUND);
         }
     }
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROJECT_MANAGER')")
     @DeleteMapping("/delete/{id}")
     ResponseEntity<String> DeleteTask(@PathVariable Long id){
         try{
-            obj.DeleteTask(id);
+            String email=SecurityContextHolder.getContext().getAuthentication().getName();
+            obj.DeleteTask(id, email);
             return new ResponseEntity<>("Deleted Sucessfully",HttpStatus.OK);
-        }catch(RuntimeException error){
+        }catch(Exception error){
             return new ResponseEntity<>(error.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROJECT_MANAGER', 'TEAM_LEAD', 'DEVELOPER', 'JUNIOR_DEV')")
     @PutMapping("/update/{id}")
-    ResponseEntity<?> UpdateTask(@PathVariable Long id,@RequestBody Task data){
+    ResponseEntity<?> UpdateTask(@PathVariable Long id,@Valid @RequestBody Task data){
         try{
-            return new ResponseEntity<>(obj.UpdateTask(id, data),HttpStatus.OK);
+            String email=SecurityContextHolder.getContext().getAuthentication().getName();
+            return new ResponseEntity<>(obj.UpdateTask(id, data, email),HttpStatus.OK);
         }
-        catch(RuntimeException e){
+        catch(Exception e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }

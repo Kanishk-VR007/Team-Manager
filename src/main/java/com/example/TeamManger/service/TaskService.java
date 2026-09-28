@@ -5,9 +5,9 @@ import java.util.List;
 import com.example.TeamManger.entity.Task;
 
 public interface TaskService {
-    public Task SaveTask(Task data);
-    public Task getTaskById(Long id);
+    public Task SaveTask(Task data, String email);
+    public Task getTaskById(Long id, String email);
     public List<Task> getAllTasks(String email);
-    public Task UpdateTask(Long id,Task data);
-    public void DeleteTask(Long id);
+    public Task UpdateTask(Long id, Task data, String email);
+    public void DeleteTask(Long id, String email);
 }

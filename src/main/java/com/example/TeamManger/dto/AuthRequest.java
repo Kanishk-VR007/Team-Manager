@@ -2,6 +2,7 @@ package com.example.TeamManger.dto;
 
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class AuthRequest{
     private String email;

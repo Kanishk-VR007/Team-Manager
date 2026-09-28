@@ -5,6 +5,8 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import com.example.TeamManger.entity.Role;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,7 +17,7 @@ public class Jwtutil{
     String base="huricanetheonly12tyhggej0amzp9wxjnpsbfvccxhypgfNWEFHBFZSIGVIAUZBB";
     int Expiration=1000*60*60*24;
     private final Key Actual_Key=Keys.hmacShaKeyFor(base.getBytes());
-    public String gen_token(String Email,String role){
+    public String gen_token(String Email,Role role){
         return Jwts.builder()
                    .setSubject(Email)
                    .setIssuedAt(new Date(System.currentTimeMillis()))
