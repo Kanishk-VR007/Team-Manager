@@ -18,10 +18,12 @@ public class CommunicationService {
     @Autowired
     private Userrepository userRepository;
 
-    public void sendMessage(String username, ChannelType type, Long teamId, String content) {
+    @Autowired
+    private com.example.TeamManger.repository.Taskrepository taskRepository;
+
+    public void sendMessage(String username, ChannelType type, Long teamId, Long taskId, String content) {
         Users user = userRepository.findByUserName(username);
         if (user == null) {
-            // Also try email since username might map to email in spring security
             user = userRepository.findByEmail(username);
         }
         
@@ -35,11 +37,19 @@ public class CommunicationService {
             }
         } else if (type == ChannelType.INTER_TEAM) {
             if (user.getTeam() == null || !user.getTeam().getId().equals(teamId)) {
-                // If they don't belong to the team, check if they have admin/PM role as a fallback, or strictly throw
-                // Prompt: "check if the user belongs to the provided teamId or is the Team Lead of that team."
-                // Wait, if they are the Team Lead of that team, their teamId WOULD BE that teamId, presumably.
-                // We'll just check if their teamId matches the requested teamId.
                 throw new SecurityException("Unauthorized: You do not belong to this team");
+            }
+        } else if (type == ChannelType.TASK_COLLABORATION) {
+            com.example.TeamManger.entity.Task task = taskRepository.findById(taskId).orElse(null);
+            if (task == null) throw new SecurityException("Task not found");
+            
+            boolean isAssigned = (task.getUser() != null && task.getUser().getId().equals(user.getId()));
+            boolean isIntern = (task.getIntern() != null && task.getIntern().getId().equals(user.getId()));
+            boolean isTeamLead = (user.getRole() == Role.TEAM_LEAD && user.getTeam() != null && task.getUser() != null && task.getUser().getTeam() != null && task.getUser().getTeam().getId().equals(user.getTeam().getId()));
+            boolean isPM = (user.getRole() == Role.PROJECT_MANAGER || user.getRole() == Role.ADMIN);
+            
+            if (!isAssigned && !isIntern && !isTeamLead && !isPM) {
+                throw new SecurityException("Unauthorized: You do not have access to this private task chat");
             }
         }
 
@@ -47,6 +57,7 @@ public class CommunicationService {
         log.setSender(user);
         log.setChannelType(type);
         log.setTeamId(type == ChannelType.INTER_TEAM ? teamId : null);
+        log.setTaskId(type == ChannelType.TASK_COLLABORATION ? taskId : null);
         log.setContent(content);
         communicationLogRepository.save(log);
     }

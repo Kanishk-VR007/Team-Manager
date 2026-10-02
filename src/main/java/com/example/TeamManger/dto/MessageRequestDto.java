@@ -5,7 +5,16 @@ import com.example.TeamManger.entity.ChannelType;
 public class MessageRequestDto {
     private ChannelType channelType;
     private Long teamId;
+    private Long taskId;
     private String content;
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
 
     public ChannelType getChannelType() {
         return channelType;

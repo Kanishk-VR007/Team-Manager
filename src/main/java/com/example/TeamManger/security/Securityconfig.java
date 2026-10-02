@@ -28,6 +28,7 @@ public class Securityconfig {
             "/auth/login/**",
             "/auth/register",
             "/auth/register/**",
+            "/auth/oauth-login",
             "/auth/drop-constraint",
             "/swagger-ui/**",
             "/v3/api-docs/**"

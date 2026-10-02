@@ -8,4 +8,5 @@ import java.util.List;
 public interface CommunicationLogRepository extends JpaRepository<CommunicationLog, Long> {
     List<CommunicationLog> findByChannelTypeOrderByTimestampAsc(ChannelType channelType);
     List<CommunicationLog> findByChannelTypeAndTeamIdOrderByTimestampAsc(ChannelType channelType, Long teamId);
+    List<CommunicationLog> findByChannelTypeAndTaskIdOrderByTimestampAsc(ChannelType channelType, Long taskId);
 }

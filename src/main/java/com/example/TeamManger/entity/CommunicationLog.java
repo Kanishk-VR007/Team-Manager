@@ -24,6 +24,8 @@ public class CommunicationLog {
     private ChannelType channelType;
 
     private Long teamId;
+    
+    private Long taskId;
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -68,6 +70,14 @@ public class CommunicationLog {
 
     public void setTeamId(Long teamId) {
         this.teamId = teamId;
+    }
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
     public String getContent() {

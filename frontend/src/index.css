@@ -1,0 +1,462 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    overscroll-behavior: none;
+    background-color: #050B18;
+  }
+  main > :first-child {
+    margin-top: 0 !important;
+  }
+  main > :last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Glassmorphism styling for Landing Page */
+.glass-panel {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.03) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(147, 197, 253, 0.45);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), inset 0 1px 1px 0 rgba(255, 255, 255, 0.5), 0 0 25px -4px rgba(56, 189, 248, 0.3);
+}
+.glass-panel-subtle {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+}
+.glass-btn {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.amber-cta {
+  background: linear-gradient(90deg, #f59e0b 0%, #ea580c 100%);
+  box-shadow: 0 10px 30px -4px rgba(234, 88, 12, 0.65), 0 0 20px rgba(245, 158, 11, 0.4);
+}
+.amber-cta:hover {
+  box-shadow: 0 12px 35px -2px rgba(234, 88, 12, 0.8), 0 0 28px rgba(245, 158, 11, 0.55);
+}
+.blue-cta {
+  background: linear-gradient(100deg, #3b82f6 0%, #4f46e5 100%);
+  box-shadow: 0 10px 25px -4px rgba(79, 70, 229, 0.6), 0 0 15px rgba(59, 130, 246, 0.35);
+}
+
+/* Perspective 3D canvas styling */
+.perspective-container {
+  perspective: 1000px;
+}
+.isometric-tilt {
+  transform: rotateX(16deg) rotateY(-18deg) rotateZ(4deg);
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.isometric-tilt:hover {
+  transform: rotateX(8deg) rotateY(-8deg) rotateZ(1deg) translateY(-4px);
+}
+
+/* Animation: Layer 1 Background Zoom and Pan */
+@keyframes bg-pan-zoom {
+  0% { transform: scale(1.0) translateX(0); }
+  50% { transform: scale(1.05) translateX(-1%); }
+  100% { transform: scale(1.0) translateX(0); }
+}
+.animate-bg-pan-zoom {
+  animation: bg-pan-zoom 30s ease-in-out infinite;
+}
+
+/* Animation: Layer 2 Floating Elements (Subtle Y Rotation) */
+@keyframes float-y-rotate {
+  0% { transform: translateY(0px) rotateY(0deg); }
+  50% { transform: translateY(-15px) rotateY(8deg); }
+  100% { transform: translateY(0px) rotateY(0deg); }
+}
+.animate-float-slow {
+  animation: float-y-rotate 8s ease-in-out infinite;
+}
+.animate-float-medium {
+  animation: float-y-rotate 6s ease-in-out infinite;
+  animation-delay: 1s;
+}
+.animate-float-fast {
+  animation: float-y-rotate 4s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* Animation: Layer 3 Light Trails */
+@keyframes dash {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+.animate-trail {
+  stroke-dasharray: 50 150;
+  animation: dash 10s linear infinite;
+  stroke-linecap: round;
+}
+
+/* Animation: Layer 6 Particles */
+@keyframes particle-drift {
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  20% { opacity: 0.8; }
+  80% { opacity: 0.8; }
+  100% { transform: translateY(-50px) scale(0.5); opacity: 0; }
+}
+.animate-particle {
+  animation: particle-drift 5s infinite linear;
+}
+\n/* Login CSS */\n
+@layer base{
+  html,body{margin:0;padding:0;}
+  body{overscroll-behavior:none;}
+  main>:first-child{margin-top:0!important;}
+  main>:last-child{margin-bottom:0!important;}
+}
+::-webkit-scrollbar{display:none;}
+
+/* 3D Showcase and Lighting Effects */
+.perspective-container {
+  perspective: 1200px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+@keyframes pulse-glow-slow {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+}
+
+/* Core Energy Shockwave Rings */
+@keyframes core-shockwave {
+  0% {
+    transform: translate(-50%, -50%) scale(0.35);
+    opacity: 0.95;
+    box-shadow: 0 0 15px rgba(76, 215, 246, 0.9), inset 0 0 15px rgba(173, 198, 255, 0.8);
+  }
+  70% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+    box-shadow: 0 0 45px rgba(76, 215, 246, 0), inset 0 0 25px rgba(173, 198, 255, 0);
+  }
+}
+
+/* Wire Power Pulse Traveling Animation */
+@keyframes dash-travel {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+@keyframes dash-travel-reverse {
+  to {
+    stroke-dashoffset: 200;
+  }
+}
+
+/* Core breathing aura */
+@keyframes core-breathe {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+    filter: drop-shadow(0 0 20px rgba(76, 215, 246, 0.8)) drop-shadow(0 0 45px rgba(77, 142, 255, 0.7));
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.22);
+    opacity: 1;
+    filter: drop-shadow(0 0 35px rgba(76, 215, 246, 1)) drop-shadow(0 0 65px rgba(225, 120, 255, 0.85));
+  }
+}
+
+/* Neon node pulse */
+@keyframes node-blink {
+  0%, 100% {
+    transform: scale(0.85);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+    box-shadow: 0 0 16px rgba(76, 215, 246, 0.9);
+  }
+}
+
+/* Top-Right Hologram Task Ticker */
+@keyframes ticker-slide {
+  0%, 28% {
+    transform: translateY(0%);
+  }
+  33%, 61% {
+    transform: translateY(-33.333%);
+  }
+  66%, 95% {
+    transform: translateY(-66.666%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+/* Dynamic Progress Bar pulse & refill */
+@keyframes bar-fill-1 {
+  0% { width: 35%; }
+  50% { width: 92%; }
+  100% { width: 35%; }
+}
+@keyframes bar-fill-2 {
+  0% { width: 75%; }
+  50% { width: 42%; }
+  100% { width: 75%; }
+}
+
+/* Timeline scrubber head movement */
+@keyframes timeline-scrub {
+  0% {
+    left: 28%;
+  }
+  50% {
+    left: 64%;
+  }
+  100% {
+    left: 28%;
+  }
+}
+
+/* Status badge state glow cycle */
+@keyframes status-morph {
+  0%, 45% {
+    background-color: rgba(0, 158, 185, 0.25);
+    border-color: rgba(76, 215, 246, 0.6);
+    color: #4cd7f6;
+  }
+  55%, 100% {
+    background-color: rgba(173, 198, 255, 0.25);
+    border-color: rgba(173, 198, 255, 0.7);
+    color: #adc6ff;
+  }
+}
+
+/* Hologram screen subtle scanline shimmer */
+@keyframes holo-shimmer {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+/* Left Weekly Bars Animation */
+@keyframes bar-fluctuate-1 {
+  0%, 100% { height: 45%; }
+  50% { height: 95%; }
+}
+@keyframes bar-fluctuate-2 {
+  0%, 100% { height: 75%; }
+  50% { height: 35%; }
+}
+@keyframes bar-fluctuate-3 {
+  0%, 100% { height: 60%; }
+  50% { height: 85%; }
+}
+@keyframes bar-fluctuate-4 {
+  0%, 100% { height: 30%; }
+  50% { height: 90%; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow-slow 6s ease-in-out infinite;
+}
+.animate-core-breathe {
+  animation: core-breathe 3.5s ease-in-out infinite;
+}
+.animate-shockwave-1 {
+  animation: core-shockwave 4s cubic-bezier(0.1, 0.7, 0.1, 1) infinite;
+}
+.animate-shockwave-2 {
+  animation: core-shockwave 4s cubic-bezier(0.1, 0.7, 0.1, 1) infinite 2s;
+}
+.animate-dash-travel-1 {
+  stroke-dasharray: 8 16;
+  animation: dash-travel 2.8s linear infinite;
+}
+.animate-dash-travel-2 {
+  stroke-dasharray: 6 12;
+  animation: dash-travel 2s linear infinite;
+}
+.animate-dash-travel-3 {
+  stroke-dasharray: 10 18;
+  animation: dash-travel 3.2s linear infinite;
+}
+.animate-ticker {
+  animation: ticker-slide 10s ease-in-out infinite;
+}
+.animate-bar-1 {
+  animation: bar-fill-1 5s ease-in-out infinite;
+}
+.animate-bar-2 {
+  animation: bar-fill-2 6s ease-in-out infinite 0.5s;
+}
+.animate-scrub {
+  animation: timeline-scrub 7s ease-in-out infinite;
+}
+.animate-status-badge {
+  animation: status-morph 6s ease-in-out infinite;
+}
+.holo-scanline {
+  animation: holo-shimmer 4s linear infinite;
+}
+.bar-f1 { animation: bar-fluctuate-1 2.2s ease-in-out infinite; }
+.bar-f2 { animation: bar-fluctuate-2 2.6s ease-in-out infinite 0.3s; }
+.bar-f3 { animation: bar-fluctuate-3 2.1s ease-in-out infinite 0.6s; }
+.bar-f4 { animation: bar-fluctuate-4 2.8s ease-in-out infinite 0.2s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-glow,
+  .animate-core-breathe,
+  .animate-shockwave-1,
+  .animate-shockwave-2,
+  .animate-dash-travel-1,
+  .animate-dash-travel-2,
+  .animate-dash-travel-3,
+  .animate-ticker,
+  .animate-bar-1,
+  .animate-bar-2,
+  .animate-scrub,
+  .animate-status-badge,
+  .holo-scanline,
+  .bar-f1, .bar-f2, .bar-f3, .bar-f4 {
+    animation: none !important;
+  }
+  #parallax-card {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+\n/* Register CSS */\n
+@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}
+::-webkit-scrollbar{display:none;}
+
+/* Cosmic animations & Seamless Overlay Effects */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); filter: drop-shadow(0 0 5px #acedff); }
+}
+@keyframes auroraWave1 {
+  0% { transform: translate(-5%, -2%) skewX(-4deg) scaleY(0.95); opacity: 0.35; }
+  50% { transform: translate(6%, 4%) skewX(6deg) scaleY(1.2); opacity: 0.7; }
+  100% { transform: translate(-5%, -2%) skewX(-4deg) scaleY(0.95); opacity: 0.35; }
+}
+@keyframes auroraWave2 {
+  0% { transform: translate(4%, 3%) skewX(5deg) scaleY(1.1); opacity: 0.3; }
+  50% { transform: translate(-6%, -3%) skewX(-6deg) scaleY(0.9); opacity: 0.65; }
+  100% { transform: translate(4%, 3%) skewX(5deg) scaleY(1.1); opacity: 0.3; }
+}
+@keyframes nebulaDrift {
+  0% { transform: translateX(-4%) translateY(0%) scale(1); opacity: 0.3; }
+  50% { transform: translateX(5%) translateY(-3%) scale(1.1); opacity: 0.6; }
+  100% { transform: translateX(-4%) translateY(0%) scale(1); opacity: 0.3; }
+}
+@keyframes radarOrbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes radarOrbitRev {
+  0% { transform: rotate(360deg) rotateX(55deg); }
+  100% { transform: rotate(0deg) rotateX(55deg); }
+}
+@keyframes streamParticles {
+  0% { transform: translateY(18px) scale(0.7); opacity: 0; }
+  40% { opacity: 0.9; }
+  100% { transform: translateY(-28px) scale(1.2); opacity: 0; }
+}
+@keyframes waveformPulse {
+  0%, 100% { stroke-dashoffset: 0; opacity: 0.6; }
+  50% { stroke-dashoffset: 40; opacity: 1; filter: drop-shadow(0 0 4px #4cd7f6); }
+}
+@keyframes flameFlicker {
+  0%, 100% { transform: scaleY(1) scaleX(1); opacity: 0.45; }
+  50% { transform: scaleY(1.08) scaleX(0.96); opacity: 0.85; filter: drop-shadow(0 0 14px rgba(255, 170, 70, 0.9)); }
+}
+@keyframes workerTyping {
+  0%, 100% { opacity: 0.3; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.35); filter: drop-shadow(0 0 6px #4cd7f6); }
+}
+@keyframes operatorHeadGentle {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  30% { transform: translate(1px, -0.8px) rotate(2deg); }
+  70% { transform: translate(-1px, 0.5px) rotate(-1.5deg); }
+}
+@keyframes operatorLean {
+  0%, 100% { transform: rotate(0deg); }
+  45% { transform: rotate(-2.5deg) translateY(-0.8px); }
+  85% { transform: rotate(1.5deg) translateY(0.4px); }
+}
+
+.star-fast { animation: twinkle 2s infinite ease-in-out; }
+.star-mid { animation: twinkle 3.4s infinite ease-in-out; }
+.star-slow { animation: twinkle 4.8s infinite ease-in-out; }
+.aurora-layer-1 { animation: auroraWave1 14s infinite ease-in-out alternate; }
+.aurora-layer-2 { animation: auroraWave2 18s infinite ease-in-out alternate; }
+.nebula-glow { animation: nebulaDrift 22s infinite ease-in-out alternate; }
+.rocket-flame-glow { animation: flameFlicker 0.25s infinite ease-in-out; }
+
+/* Anti-Gravity UI Effects */
+.anti-gravity-card {
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.anti-gravity-card:hover {
+  transform: translateY(-4px) rotateX(2deg) rotateY(-1deg);
+  box-shadow: 0 12px 40px -8px rgba(77, 142, 255, 0.2), 0 0 20px rgba(77, 142, 255, 0.1);
+  border-color: rgba(77, 142, 255, 0.3);
+}
+
+.anti-gravity-glow:hover {
+  filter: drop-shadow(0 0 15px rgba(77, 142, 255, 0.4));
+}
+
+/* Calendar Specific Animations */
+@keyframes clock-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.hover-clock-spin:hover .clock-icon {
+  animation: clock-rotate 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes draw-tick {
+  0% { stroke-dashoffset: 24; }
+  100% { stroke-dashoffset: 0; }
+}
+.hover-tick-draw:hover .tick-path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: draw-tick 0.5s ease-out forwards;
+}
+.tick-path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 0;
+}

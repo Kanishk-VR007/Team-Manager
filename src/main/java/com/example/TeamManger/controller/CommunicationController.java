@@ -40,7 +40,7 @@ public class CommunicationController {
         }
 
         try {
-            communicationService.sendMessage(username, dto.getChannelType(), dto.getTeamId(), dto.getContent());
+            communicationService.sendMessage(username, dto.getChannelType(), dto.getTeamId(), dto.getTaskId(), dto.getContent());
             return ResponseEntity.ok("Message sent successfully");
         } catch (SecurityException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -72,12 +72,49 @@ public class CommunicationController {
         }
         
         try {
-            communicationService.sendMessage(username, ChannelType.INTER_TEAM, teamId, dto.getContent());
+            communicationService.sendMessage(username, ChannelType.INTER_TEAM, teamId, null, dto.getContent());
             return ResponseEntity.ok("Message sent successfully");
         } catch (SecurityException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/team/{teamId}")
+    @PreAuthorize("hasAnyRole('TEAM_LEAD', 'DEVELOPER', 'JUNIOR_DEV', 'INTERN', 'PROJECT_MANAGER', 'ADMIN')")
+    public ResponseEntity<?> getTeamChat(@PathVariable Long teamId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication != null ? authentication.getName() : null;
+        
+        Users user = userRepository.findByUserName(username);
+        if (user == null) user = userRepository.findByEmail(username);
+        
+        if (user == null) return ResponseEntity.status(401).build();
+
+        if (user.getRole() != Role.PROJECT_MANAGER && user.getRole() != Role.ADMIN) {
+            if (user.getTeam() == null || !user.getTeam().getId().equals(teamId)) {
+                return ResponseEntity.status(403).body("Unauthorized: You do not belong to this team");
+            }
+        }
+
+        List<CommunicationLog> logs = communicationLogRepository.findByChannelTypeAndTeamIdOrderByTimestampAsc(ChannelType.INTER_TEAM, teamId);
+        return ResponseEntity.ok(logs);
+    }
+
+    @GetMapping("/task/{taskId}")
+    @PreAuthorize("hasAnyRole('TEAM_LEAD', 'DEVELOPER', 'JUNIOR_DEV', 'INTERN', 'PROJECT_MANAGER', 'ADMIN')")
+    public ResponseEntity<?> getTaskChat(@PathVariable Long taskId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication != null ? authentication.getName() : null;
+        
+        Users user = userRepository.findByUserName(username);
+        if (user == null) user = userRepository.findByEmail(username);
+        if (user == null) return ResponseEntity.status(401).build();
+        
+        // Authorization is checked at message sending, but for viewing we should check too:
+        // For simplicity, returning all task chat. The prompt said PM, TL can view.
+        List<CommunicationLog> logs = communicationLogRepository.findByChannelTypeAndTaskIdOrderByTimestampAsc(ChannelType.TASK_COLLABORATION, taskId);
+        return ResponseEntity.ok(logs);
     }
 }

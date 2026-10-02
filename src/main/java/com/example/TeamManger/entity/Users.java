@@ -30,6 +30,7 @@ public class Users {
     @Column(name = "workload_score")
     private Integer workloadScore = 0;
     
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
@@ -37,6 +38,23 @@ public class Users {
     private Role role=Role.DEVELOPER;
     private String fpassword;
     private String cpassword;
+
+    private String primaryDomain; // e.g. BACKEND, FRONTEND
+    private String secondaryDomains; // e.g. DEVOPS, DATABASE (comma separated)
+
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supervisor_id")
+    private Users supervisor; // For tracking who supervises interns
+
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @OneToMany(mappedBy = "supervisor")
+    private List<Users> supervisedInterns;
+
+    private Integer mentoringWorkload = 0;
+    private Integer supportWorkload = 0;
+    private Integer codeReviewWorkload = 0;
+    
     @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Task> task;
@@ -132,6 +150,59 @@ public class Users {
 
     public void setTasks(List<Task> task) {
         this.task = task;
+    }
+
+    public String getPrimaryDomain() { return primaryDomain; }
+    public void setPrimaryDomain(String primaryDomain) { this.primaryDomain = primaryDomain; }
+    public String getSecondaryDomains() { return secondaryDomains; }
+    public void setSecondaryDomains(String secondaryDomains) { this.secondaryDomains = secondaryDomains; }
+    public Users getSupervisor() { return supervisor; }
+    public void setSupervisor(Users supervisor) { this.supervisor = supervisor; }
+    public List<Users> getSupervisedInterns() { return supervisedInterns; }
+    public void setSupervisedInterns(List<Users> supervisedInterns) { this.supervisedInterns = supervisedInterns; }
+    public Integer getMentoringWorkload() { return mentoringWorkload; }
+    public void setMentoringWorkload(Integer mentoringWorkload) { this.mentoringWorkload = mentoringWorkload; }
+    public Integer getSupportWorkload() { return supportWorkload; }
+    public void setSupportWorkload(Integer supportWorkload) { this.supportWorkload = supportWorkload; }
+    public Integer getCodeReviewWorkload() { return codeReviewWorkload; }
+    public void setCodeReviewWorkload(Integer codeReviewWorkload) { this.codeReviewWorkload = codeReviewWorkload; }
+
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    public Integer getEffectiveWorkload() {
+        if (task == null) return 0;
+        int directTaskWorkload = (int) task.stream().filter(t -> !"COMPLETED".equalsIgnoreCase(t.getCompletionStatus())).count() * 10;
+        int mentoring = mentoringWorkload != null ? mentoringWorkload : 0;
+        int support = supportWorkload != null ? supportWorkload : 0;
+        int review = codeReviewWorkload != null ? codeReviewWorkload : 0;
+        return directTaskWorkload + mentoring + support + review;
+    }
+
+    @com.fasterxml.jackson.annotation.JsonProperty("tasksCompleted")
+    public int getTasksCompleted() {
+        if (task == null) return 0;
+        return (int) task.stream().filter(t -> "COMPLETED".equalsIgnoreCase(t.getCompletionStatus())).count();
+    }
+
+    @com.fasterxml.jackson.annotation.JsonProperty("completionRate")
+    public int getCompletionRate() {
+        if (task == null || task.isEmpty()) return 0;
+        return (int) ((getTasksCompleted() / (double) task.size()) * 100);
+    }
+
+    @com.fasterxml.jackson.annotation.JsonProperty("averageCompletionTime")
+    public double getAverageCompletionTime() {
+        if (task == null) return 0.0;
+        List<Task> completed = task.stream().filter(t -> "COMPLETED".equalsIgnoreCase(t.getCompletionStatus())).toList();
+        if (completed.isEmpty()) return 0.0;
+        return Math.round(completed.stream().mapToDouble(t -> t.getActualHours() != null ? t.getActualHours() : 0.0).average().orElse(0.0) * 10.0) / 10.0;
+    }
+
+    @com.fasterxml.jackson.annotation.JsonProperty("currentProgress")
+    public int getCurrentProgress() {
+        if (task == null) return 0;
+        List<Task> active = task.stream().filter(t -> !"COMPLETED".equalsIgnoreCase(t.getCompletionStatus())).toList();
+        if (active.isEmpty()) return 0;
+        return (int) active.stream().mapToInt(t -> t.getProgress() != null ? t.getProgress() : 0).average().orElse(0.0);
     }
 
     public Users(Long id, String userName, String email, Role role, String fpassword, String cpassword,

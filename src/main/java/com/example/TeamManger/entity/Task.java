@@ -17,15 +17,35 @@ public class Task {
     private Long id;
     @NotBlank(message = "Task name is mandatory")
     private String taskName;
+    
+    private String description;
+    
+    private String domain; // FRONTEND, BACKEND, etc.
+    
+    private String priority; // LOW, MEDIUM, HIGH, CRITICAL
+    
+    private Double estimatedHours;
+    private Double actualHours;
+    
+    private Integer progress = 0;
+
     @NotNull(message = "Start time is mandatory")
     private LocalDateTime startTime;
     @NotNull(message = "End time is mandatory")
     private LocalDateTime endTime;
     @NotBlank(message = "Status is mandatory")
-    private String  completionStatus;
+    private String completionStatus;
     @ManyToOne
     @JoinColumn(name="user")
     private Users user;
+    @ManyToOne
+    @JoinColumn(name="project_id")
+    private Project project;
+
+    @ManyToOne
+    @JoinColumn(name="intern_id")
+    private Users intern;
+
     public Long getId(){
         return id;
     }
@@ -35,6 +55,22 @@ public class Task {
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getDomain() { return domain; }
+    public void setDomain(String domain) { this.domain = domain; }
+    public String getPriority() { return priority; }
+    public void setPriority(String priority) { this.priority = priority; }
+    public Double getEstimatedHours() { return estimatedHours; }
+    public void setEstimatedHours(Double estimatedHours) { this.estimatedHours = estimatedHours; }
+    public Double getActualHours() { return actualHours; }
+    public void setActualHours(Double actualHours) { this.actualHours = actualHours; }
+    public Integer getProgress() { return progress; }
+    public void setProgress(Integer progress) { this.progress = progress; }
+    public Project getProject() { return project; }
+    public void setProject(Project project) { this.project = project; }
+    public Users getIntern() { return intern; }
+    public void setIntern(Users intern) { this.intern = intern; }
     public LocalDateTime getStartTime() {
         return startTime;
     }
